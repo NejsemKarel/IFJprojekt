@@ -50,7 +50,7 @@ AutomatState Next_State (AutomatState now, char c)
 {
     switch (now)
     {
-        case start: if (c == ' ') return start;
+        case start: if (c == ' ' || c == '\n') return start;
                     if (c == '$') return variable;
                     if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A')) return keyword;
                     if (c <= '9' && c >= '0') return integer;
@@ -102,7 +102,7 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case notEqual:      return Next_State(start, c);
             break;
-        case stringRead:    if (c == '"') 
+        case stringRead:    if (c != '"') return stringRead;
                             return Next_State(start, c);
             break;
         case comma:         return Next_State(start, c);
@@ -160,10 +160,10 @@ int main ()
 {
     AutomatState CurrentState = start;
     while (TRUE)
-    {
+    {   
         char c = getchar();
         if (c == EOF) break;
-        if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
+        if (CurrentState != Next_State(CurrentState, c)) printf("\n");
         printf("%c", c);
         
         CurrentState = Next_State(CurrentState, c);
