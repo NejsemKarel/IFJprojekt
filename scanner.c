@@ -50,7 +50,8 @@ AutomatState Next_State (AutomatState now, char c)
 {
     switch (now)
     {
-        case start: if (c == '$') return variable;
+        case start: if (c == ' ') return start;
+                    if (c == '$') return variable;
                     if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A') return keyword;
                     if (c <= '9' && c >= '0') return integer;
                     if (c == ';') return semicolon;
@@ -71,7 +72,7 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '<') return less;
                     if (c == '>') return greater;
             break;
-        case keyword:       if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return keyword;
+        case keyword:       if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0')) return keyword;
                             return Next_State(start, c);
             break;
         case variable:      if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0' || c == '_') return variable;
@@ -101,7 +102,8 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case notEqual:      return Next_State(start, c);
             break;
-        case stringRead:    if (c == '"') return Next_State(start, c);
+        case stringRead:    if (c == '"') 
+                            return Next_State(start, c);
             break;
         case comma:         return Next_State(start, c);
             break;
@@ -159,6 +161,9 @@ int main ()
     {
         char c = getchar();
         if (c == EOF) break;
+        if (CurrentState != Next_State(CurrentState, c)) printf("\n");
+        printf("%c", c);
+        
         CurrentState = Next_State(CurrentState, c);
     }
     return 0;
