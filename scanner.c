@@ -52,7 +52,7 @@ AutomatState Next_State (AutomatState now, char c)
     {
         case start: if (c == ' ') return start;
                     if (c == '$') return variable;
-                    if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A') return keyword;
+                    if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A')) return keyword;
                     if (c <= '9' && c >= '0') return integer;
                     if (c == ';') return semicolon;
                     if (c == '=') return assign;
@@ -72,10 +72,10 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '<') return less;
                     if (c == '>') return greater;
             break;
-        case keyword:       if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0')) return keyword;
+        case keyword:       if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0') || c == '_') return keyword;
                             return Next_State(start, c);
             break;
-        case variable:      if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0' || c == '_') return variable;
+        case variable:      if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0') || c == '_') return variable;
                             return Next_State(start, c);
             break;
         case integer:       if (c <= '9' && c >= '0') return integer;
@@ -142,16 +142,18 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case prolog:        return Next_State(start, c);
             break;
-        case comment:       if (c == EOL) return start; 
+        case comment:       if (c == EOL) return start;
+            break;
         case comStart:      if (c == '*') return comEnd;
                             return comStart;
             break;
         case comEnd:        if (c == '/') return start;
                             return comStart;
             break;
-        default:
+        default:            return now;
             break;
     }
+    return now;
 }
 
 int main ()
@@ -161,7 +163,7 @@ int main ()
     {
         char c = getchar();
         if (c == EOF) break;
-        if (CurrentState != Next_State(CurrentState, c)) printf("\n");
+        if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
         printf("%c", c);
         
         CurrentState = Next_State(CurrentState, c);
