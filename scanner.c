@@ -17,6 +17,7 @@ typedef enum
     equal,
     notEqual,
     stringRead,
+    string,
     Lbracket,
     Rbracket,
     Lcurly,
@@ -31,12 +32,14 @@ typedef enum
     exclEqu,        // vykricnik rovnase != (mezistav pro !==)
     comment,
     comStart,
+    comPom,
     comEnd,
     less,
     lessEqual,
     greater,
     greaterEqual,
-    prolog
+    prolog,
+    prologEnd
 }AutomatState;
 
 typedef struct 
@@ -73,82 +76,88 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '>') return greater;
             break;
         case keyword:       if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0') || c == '_') return keyword;
-                            return Next_State(start, c);
+                            return start;
             break;
         case variable:      if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0') || c == '_') return variable;
-                            return Next_State(start, c);
+                            return start;
             break;
         case integer:       if (c <= '9' && c >= '0') return integer;
                             if (c == '.') return floating;
-                            return Next_State(start, c);
+                            return start;
             break;
         case floating:      if (c <= '9' && c >= '0') return floating;
-                            return Next_State(start, c);
+                            return start;
             break;
-        case semicolon:     return Next_State(start, c);
+        case semicolon:     return start;
             break; 
         case assign:        if (c == '=') return doubleEqu;
-                            return Next_State(start, c);
+                            return start;
             break;
         case exclMark:      if (c == '=') return exclEqu;
-                            return Next_State(start, c);
+                            return start;
             break;
         case exclEqu:       if (c == '=') return notEqual;       
             break;
         case doubleEqu:     if (c == '=') return equal;
-                            return Next_State(start, c);
+                            return start;
             break;
-        case equal:         return Next_State(start, c);
+        case equal:         return start;
             break;
-        case notEqual:      return Next_State(start, c);
+        case notEqual:      return start;
             break;
         case stringRead:    if (c != '"') return stringRead;
-                            return Next_State(start, c);
+                            return string;
             break;
-        case comma:         return Next_State(start, c);
+        case string:        return start;
             break;
-        case Lbracket:      return Next_State(start, c);
+        case comma:         return start;
             break;
-        case Rbracket:      return Next_State(start, c);
+        case Lbracket:      return start;
             break;
-        case Lcurly:        return Next_State(start, c);
+        case Rbracket:      return start;
             break;
-        case Rcurly:        return Next_State(start, c);
+        case Lcurly:        return start;
             break;
-        case Lsquare:       return Next_State(start, c);
+        case Rcurly:        return start;
             break;
-        case Rsquare:       return Next_State(start, c);
+        case Lsquare:       return start;
             break;
-        case add:           return Next_State(start, c);
+        case Rsquare:       return start;
             break;
-        case sub:           return Next_State(start, c);
+        case add:           return start;
             break;
-        case mul:           return Next_State(start, c);
+        case sub:           return start;
+            break;
+        case mul:           return start;
             break;
         case div:           if (c == '*') return comStart;
                             if (c == '/') return comment;
-                            return Next_State(start, c);
+                            return start;
             break;
         case less:          if (c == '?') return prolog;
                             if (c == '=') return lessEqual;
-                            return Next_State(start, c);
+                            return start;
             break;
-        case lessEqual:     return Next_State(start, c);
+        case lessEqual:     return start;
             break;
         case greater:       if (c == '=') return greaterEqual;
-                            return Next_State(start, c);
+                            return start;
             break;
-        case greaterEqual:  return Next_State(start, c);
+        case greaterEqual:  return start;
             break;
-        case prolog:        return Next_State(start, c);
+        case prolog:        if (c == '\n') return prologEnd;
             break;
-        case comment:       if (c == EOL) return start;
+        case prologEnd:     return start;
             break;
-        case comStart:      if (c == '*') return comEnd;
+        case comment:       if (c == '\n') return start;
+            break;
+        case comStart:      if (c == '*') return comPom;
                             return comStart;
             break;
-        case comEnd:        if (c == '/') return start;
+        case comPom:        if (c == '/') return comEnd;
                             return comStart;
+            break;
+        case comEnd:        return start;
             break;
         default:            return now;
             break;
@@ -163,10 +172,19 @@ int main ()
     {   
         char c = getchar();
         if (c == EOF) break;
-        if (CurrentState != Next_State(CurrentState, c)) printf("\n");
-        printf("%c", c);
-        
-        CurrentState = Next_State(CurrentState, c);
+        if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
+        {
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
+            printf("%c", c);
+            CurrentState = Next_State(CurrentState, c);
+        }
+        else if (c != ' ')
+        {
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
+            if (c != '\n') printf("%c", c);
+            CurrentState = Next_State(CurrentState, c);
+            if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
+        }
     }
     return 0;
 }
