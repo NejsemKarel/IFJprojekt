@@ -56,4 +56,5 @@ int main ()
         char c = getchar();
         CurrentState = Next_State(CurrentState, c);
     }
+    return 0;
 }
