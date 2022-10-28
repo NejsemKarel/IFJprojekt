@@ -3,79 +3,67 @@
 
 ## State Machine
 
-Keyword
 ```
+Keyword
 S       -> [a-zA-Z]      | [a-zA-Z] KEYWORD 
 KEYWORD -> [a-zA-Z0-9]   | [a-zA-Z0-9] KEYWORD
 ```
-
-VarRead
+---
 ```
+VarRead
 S       -> $[a-zA-Z]     | $[a-zA-Z] VAR
 VAR     -> [a-zA-Z0-9]   | [a-zA-Z0-9] VAR
 ```
-
+---
+```
 String
-```
 S       -> "[^"]        | "[^"] STR
-STR     -> [^"]         | [^"] STR
+STR     -> [^"]         | [^"] 
 ```
-
+---
+```
 Divide
-|Divide|
-|----|
-|S -> [ / ] \| [ / ] DIV|
-```
 S       ->  [ / ]    | [ / ] DIV
-``` 
 
-One line coment
-```
+One line comment
 DIV      ->  [ / ]   |  [ / ] CMT
 CMT      ->  [ EOL ] |  [ EOL ] CMT
-```
 
 Coment start
-```
 DIV      ->  [ * ]  |   [ * ] CS
 ```
-
+---
+```
 Multiply
-```
 S       ->  [ * ]    | [ * ] MUL
-```
 
 Coment end
-```
 MUL      ->  [ / ]    | [ / ] CE
 ```
-
-Addition
+---
 ```
+Addition
 S       ->  [ + ]   | [ + ] ADD
 ```
-
-Substriction
+---
 ```
+Substriction
 S       ->  [ - ]    | [ - ] SUB
 ```
-
+---
+```
 Lower
-```
-S       ->  [ < ]    | [ < ] <
-```
+S       ->  [ < ]    | [ < ] LWR
 
 Lower or equal
+LWR     ->  [ = ]
 ```
-<       ->  [ = ]    | [ = ] <=
+---
 ```
-
 Higher
-```
-S       ->  [ > ]    | [ > ] >
-```
+S       ->  [ > ]    | [ > ] HGR
 
 Higher or equal
+HGR     ->  [ = ]
 ```
->       ->  [ = ]    | [ = ] >=
-```
+
