@@ -1,12 +1,15 @@
 #include <stdio.h>
 #define TRUE 1
 #define FALSE 0
+#define EOL '\n'
 
 typedef enum
 {
     start,
     variable,
     keyword,
+    integer,
+    floating,
     semicolon,
     comma,
     assign,
@@ -24,13 +27,16 @@ typedef enum
     div,
     add,
     sub,
-    backSlash,
     exclMark,
     exclEqu,        // vykricnik rovnase != (mezistav pro !==)
-    
-    oneLineCom,
+    comment,
     comStart,
-    comEnd
+    comEnd,
+    less,
+    lessEqual,
+    greater,
+    greaterEqual,
+    prolog
 }AutomatState;
 
 typedef struct 
@@ -46,6 +52,7 @@ AutomatState Next_State (AutomatState now, char c)
     {
         case start: if (c == '$') return variable;
                     if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A') return keyword;
+                    if (c <= '9' && c >= '0') return integer;
                     if (c == ';') return semicolon;
                     if (c == '=') return assign;
                     if (c == '!') return exclMark;
@@ -61,22 +68,34 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '-') return sub;
                     if (c == '*') return mul;
                     if (c == '/') return div;
-                    if (c == '\\') return backSlash;
+                    if (c == '<') return less;
+                    if (c == '>') return greater;
             break;
         case keyword:       if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return keyword;
+                            return Next_State(start, c);
             break;
         case variable:      if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0' || c == '_') return variable;
+                            return Next_State(start, c);
+            break;
+        case integer:       if (c <= '9' && c >= '0') return integer;
+                            if (c == '.') return floating;
+                            return Next_State(start, c);
+            break;
+        case floating:      if (c <= '9' && c >= '0') return floating;
+                            return Next_State(start, c);
             break;
         case semicolon:     return Next_State(start, c);
             break; 
         case assign:        if (c == '=') return doubleEqu;
-                            else return Next_State(start, c);
+                            return Next_State(start, c);
             break;
         case exclMark:      if (c == '=') return exclEqu;
-                            else return Next_State(start, c);
+                            return Next_State(start, c);
             break;
-        case doubleEqu:     if (c == '=') return notEqual;
-                            else return Next_State(start, c);
+        case exclEqu:       if (c == '=') return notEqual;       
+            break;
+        case doubleEqu:     if (c == '=') return equal;
+                            return Next_State(start, c);
             break;
         case equal:         return Next_State(start, c);
             break;
@@ -102,11 +121,31 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case sub:           return Next_State(start, c);
             break;
-        case mul:           if (c == '/') return comStart;
-                            else return Next_State(start, c);
+        case mul:           return Next_State(start, c);
             break;
-        case div:           if (c == '*') return comEnd;
+        case div:           if (c == '*') return comStart;
+                            if (c == '/') return comment;
                             return Next_State(start, c);
+            break;
+        case less:          if (c == '?') return prolog;
+                            if (c == '=') return lessEqual;
+                            return Next_State(start, c);
+            break;
+        case lessEqual:     return Next_State(start, c);
+            break;
+        case greater:       if (c == '=') return greaterEqual;
+                            return Next_State(start, c);
+            break;
+        case greaterEqual:  return Next_State(start, c);
+            break;
+        case prolog:        return Next_State(start, c);
+            break;
+        case comment:       if (c == EOL) return start; 
+        case comStart:      if (c == '*') return comEnd;
+                            return comStart;
+            break;
+        case comEnd:        if (c == '/') return start;
+                            return comStart;
             break;
         default:
             break;
