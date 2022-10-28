@@ -6,11 +6,13 @@ typedef enum
 {
     start,
     variable,
-    functionID,
+    keyword,
     semicolon,
     assign,
+    doubleEqu,
+    equal,
+    notEqual,
     stringRead,
-    stringEnd,
     Lbracket,
     Rbracket
 }AutomatState;
@@ -26,25 +28,35 @@ AutomatState Next_State (AutomatState now, char c)
 {
     switch (now)
     {
-    case start: if (c == '$') return variable;
-                if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A') return functionID;
-                if (c == ';') return semicolon;
-                if (c == '"') return stringRead;
-                if (c == '(') return Lbracket;
-                if (c == ')') return Rbracket;
-        break;
-    case functionID:    if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return functionID;
-        break;
-    case variable:      if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0' || c == '_') return variable;
-        break;
-    case semicolon:     return start;
-        break; 
-    case assign:
-        break;
-    case stringRead:   if (c == '"') return stringEnd;
-        break;
-    default:
-        break;
+        case start: if (c == '$') return variable;
+                    if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A') return keyword;
+                    if (c == ';') return semicolon;
+                    if (c == '=') return assign;
+                    if (c == '"') return stringRead;
+                    if (c == '(') return Lbracket;
+                    if (c == ')') return Rbracket;
+            break;
+        case keyword:       if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0') return keyword;
+            break;
+        case variable:      if (c <= 'z' && c >= 'a' || c <= 'Z' && c >= 'A' || c <= '9' && c >= '0' || c == '_') return variable;
+            break;
+        case semicolon:     return Next_State(start, c);;
+            break; 
+        case assign:        if (c == '=') return doubleEqu;
+                            else return Next_State(start, c);;
+            break;
+        case doubleEqu:     if (c == '=') return equal;
+                            else if (c == '!') return notEqual;
+                            else return Next_State(start, c);;
+            break;
+        case equal:         return Next_State(start, c);
+            break;
+        case notEqual:     return Next_State(start, c);
+            break;
+        case stringRead:   if (c == '"') return Next_State(start, c);
+            break;
+        default:
+            break;
     }
 }
 
@@ -54,6 +66,7 @@ int main ()
     while (TRUE)
     {
         char c = getchar();
+        if (c == EOF) break;
         CurrentState = Next_State(CurrentState, c);
     }
     return 0;
