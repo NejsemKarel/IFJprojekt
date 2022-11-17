@@ -1,5 +1,16 @@
+/*
+**************************************************
+* IFJ Projekt
+* Soubor: scanner.c
+* Část lexikální analýzy
+**************************************************
+*/
+
 #include <stdio.h>
 #include <stdbool.h>
+//#include "btree.c"      // include binární vyhledávací strom
+
+
 #define EOL '\n'
 
 typedef enum
