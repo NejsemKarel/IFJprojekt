@@ -1,6 +1,5 @@
 #include <stdio.h>
-#define TRUE 1
-#define FALSE 0
+#include <stdbool.h>
 #define EOL '\n'
 
 typedef enum
@@ -168,7 +167,7 @@ AutomatState Next_State (AutomatState now, char c)
 int main ()
 {
     AutomatState CurrentState = start;
-    while (TRUE)
+    while (true)
     {   
         char c = getchar();
         if (c == EOF) break;
