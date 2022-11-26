@@ -12,49 +12,55 @@
 typedef enum
 {
     start,
-    variable,
-    keyword,
-    integer,
-    floating,
-    semicolon,
-    comma,
-    assign,
+    variable,                   // ++
+    keyword,                    // ++
+    integer,                    // ++
+    floating,                   // ++
+    semicolon,                  // ++
+    comma,                      // ++
+    assign,                     
     doubleEqu,
     equal,
-    notEqual,
+    notEqual,                   // op
     stringRead,
-    string,
+    string,                     // ++
     Lbracket,
     Rbracket,
     Lcurly,
     Rcurly,
     Lsquare,
-    Rsquare,
-    mul,
-    div,
-    add,
-    sub,
+    Rsquare,                    // bracket
+    mul,                        // op
+    div,                        // op
+    add,                        // op
+    sub,                        // op
     exclMark,
     exclEqu,        // vykricnik rovnase != (mezistav pro !==)
     comment,
     comStart,
     comPom,
     comEnd,
-    less,
-    lessEqual,
-    greater,
-    greaterEqual,
+    less,                       // op
+    lessEqual,                  // op
+    greater,                    // op
+    greaterEqual,               // op
     prolog,
-    prologEnd
+    prologEnd                   // ++
 }AutomatState;
 
 typedef enum
 {
-    identifier,
-    constant,
-    integerType,
-    floatType,
-    tokenEOF
+    T_identifier,
+    T_constant,
+    T_integer,
+    T_float,
+    T_operator,
+    T_keyword,
+    T_bracket,
+    T_string,
+    T_separator,
+    T_prolog,
+    T_EOF
 }tokenType;
 
 typedef struct 
@@ -62,7 +68,6 @@ typedef struct
     tokenType type;
     char value;
     int lineNumber;
-    
 }token;
 
 //Funkce
@@ -70,5 +75,7 @@ typedef struct
 void getToken();        // gonna return token instead of void
 
 AutomatState Next_State(AutomatState now, char c);
+
+tokenType getType(AutomatState state);
 
 int main();
