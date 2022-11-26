@@ -48,14 +48,26 @@ typedef enum
     prologEnd
 }AutomatState;
 
+typedef enum
+{
+    identifier,
+    constant,
+    integerType,
+    floatType,
+    tokenEOF
+}tokenType;
+
 typedef struct 
 {
-    char tokenType;
-    int value;
+    tokenType type;
+    char value;
+    int lineNumber;
     
 }token;
 
 //Funkce
+
+void getToken();        // gonna return token instead of void
 
 AutomatState Next_State(AutomatState now, char c);
 

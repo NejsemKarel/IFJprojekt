@@ -128,26 +128,67 @@ AutomatState Next_State (AutomatState now, char c)
     return now;
 }
 
-int main ()
+void getToken()
 {
+    static char c;
+    static int ended;
     AutomatState CurrentState = start;
-    while (true)
-    {   
-        char c = getchar();
-        if (c == EOF) break;
+    if (ended)
+    {
         if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            {
+                printf("\n");           // return token
+            }
             printf("%c", c);
             CurrentState = Next_State(CurrentState, c);
         }
         else if (c != ' ')
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) printf("\n");
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            {
+                printf("\n");           // return token
+            }
             if (c != '\n') printf("%c", c);
             CurrentState = Next_State(CurrentState, c);
             if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
         }
+        ended = 0;
     }
+    while (true)
+    {   
+        c = getchar();
+        if (c == EOF) break;
+        if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
+        {
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            {
+                printf("\n");           // return token
+                ended = 1;
+                break;
+            }
+            printf("%c", c);
+            CurrentState = Next_State(CurrentState, c);
+        }
+        else if (c != ' ')
+        {
+            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            {
+                printf("\n");           // return token
+                ended = 1;
+                break;
+            }
+            if (c != '\n') printf("%c", c);
+            CurrentState = Next_State(CurrentState, c);
+            if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
+        }
+    }   
+}
+
+int main ()
+{
+    for (int i = 0; i < 50; i++) getToken();
+    //getToken();
     return 0;
 }
