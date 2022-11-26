@@ -128,10 +128,74 @@ AutomatState Next_State (AutomatState now, char c)
     return now;
 }
 
+tokenType getType(AutomatState state)
+{
+    switch (state)
+    {
+    case keyword:       return T_keyword;
+        break;
+    case variable:      return T_identifier;
+        break;
+    case integer:       return T_integer;
+        break;
+    case floating:      return T_float;
+        break;
+    case semicolon:     return T_separator;
+        break;
+    case assign:        return T_operator;
+        break;
+    case exclMark:      return T_operator;
+        break;
+    case doubleEqu:     return T_operator;
+        break;
+    case equal:         return T_operator;
+        break;
+    case notEqual:      return T_operator;
+        break;
+    case string:        return T_string;
+        break;
+    case comma:         return T_separator;
+        break;
+    case Lbracket:      return T_bracket;
+        break;
+    case Rbracket:      return T_bracket;
+        break;
+    case Lcurly:        return T_bracket;
+        break;
+    case Rcurly:        return T_bracket;
+        break;
+    case Lsquare:       return T_bracket;
+        break;
+    case Rsquare:       return T_bracket;
+        break;
+    case add:           return T_operator;
+        break;
+    case sub:           return T_operator;
+        break;
+    case mul:           return T_operator;
+        break;
+    case div:           return T_operator;
+        break;
+    case less:          return T_operator;
+        break;
+    case lessEqual:     return T_operator;
+        break;
+    case greater:       return T_operator;
+        break;
+    case greaterEqual:  return T_operator;
+        break;
+    case prologEnd:     return T_prolog;
+        break;
+    default:            return T_EOF;
+        break;
+    }
+}
+
 void getToken()
 {
     static char c;
     static int ended;
+    static int lineNumber;              // returned in token as lineNumber+1
     AutomatState CurrentState = start;
     if (ended)
     {
@@ -139,18 +203,19 @@ void getToken()
         {
             if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
             {
-                printf("\n");           // return token
+                printf("%d\n", lineNumber+1);           // return token
             }
-            printf("%c", c);
+            //printf("%c", c);            // to be deleted
             CurrentState = Next_State(CurrentState, c);
         }
         else if (c != ' ')
         {
             if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
             {
-                printf("\n");           // return token
+                printf("%d\n", lineNumber+1);           // return token
             }
-            if (c != '\n') printf("%c", c);
+            if (c != '\n') printf("%c", c);     // to be deleted
+            else lineNumber++;
             CurrentState = Next_State(CurrentState, c);
             if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
         }
@@ -159,31 +224,33 @@ void getToken()
     while (true)
     {   
         c = getchar();
-        if (c == EOF) break;
+        if (c == EOF) break;            // to be changed
         if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
         {
             if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
             {
-                printf("\n");           // return token
+                printf("%d\n", lineNumber+1);           // return token
                 ended = 1;
                 break;
             }
-            printf("%c", c);
+            if (c == '\n')lineNumber++;
+            //printf("%c", c);            // to be deleted
             CurrentState = Next_State(CurrentState, c);
         }
         else if (c != ' ')
         {
             if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
             {
-                printf("\n");           // return token
+                printf("%d\n", lineNumber+1);           // return token
                 ended = 1;
                 break;
             }
-            if (c != '\n') printf("%c", c);
+            if (c != '\n') printf("%c", c);     // to be deleted
+            else lineNumber++;
             CurrentState = Next_State(CurrentState, c);
             if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
         }
-    }   
+    }
 }
 
 int main ()
