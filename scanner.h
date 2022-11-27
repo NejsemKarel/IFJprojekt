@@ -31,7 +31,7 @@ typedef enum
     Lsquare,
     Rsquare,                    // bracket
     mul,                        // op
-    div,                        // op
+    divide,                        // op
     add,                        // op
     sub,                        // op
     exclMark,
@@ -63,12 +63,12 @@ typedef enum
     T_EOF
 }tokenType;
 
-typedef struct 
+typedef struct token
 {
     tokenType type;
     char value;
     int lineNumber;
-}token;
+}*tokenPtr;
 
 //Funkce
 
@@ -77,5 +77,7 @@ void getToken();        // gonna return token instead of void
 AutomatState Next_State(AutomatState now, char c);
 
 tokenType getType(AutomatState state);
+
+tokenPtr tokenInit (tokenType type, char val[], int line);
 
 int main();

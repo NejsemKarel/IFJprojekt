@@ -8,6 +8,7 @@
 
 #include "scanner.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 //#include "btree.c"      // include binární vyhledávací strom
@@ -34,7 +35,7 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '+') return add;
                     if (c == '-') return sub;
                     if (c == '*') return mul;
-                    if (c == '/') return div;
+                    if (c == '/') return divide;
                     if (c == '<') return less;
                     if (c == '>') return greater;
             break;
@@ -93,7 +94,7 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case mul:           return start;
             break;
-        case div:           if (c == '*') return comStart;
+        case divide:           if (c == '*') return comStart;
                             if (c == '/') return comment;
                             return start;
             break;
@@ -174,7 +175,7 @@ tokenType getType(AutomatState state)
         break;
     case mul:           return T_operator;
         break;
-    case div:           return T_operator;
+    case divide:           return T_operator;
         break;
     case less:          return T_operator;
         break;
@@ -189,6 +190,14 @@ tokenType getType(AutomatState state)
     default:            return T_EOF;
         break;
     }
+}
+tokenPtr tokenInit(tokenType type, char val[], int line)
+{
+    tokenPtr newToken = (tokenPtr) malloc(sizeof(struct token));
+    newToken->type = type;
+    newToken->value = *val;
+    newToken->lineNumber = line;
+    return newToken;
 }
 
 void getToken()
@@ -255,7 +264,13 @@ void getToken()
 
 int main ()
 {
-    for (int i = 0; i < 50; i++) getToken();
-    //getToken();
+    //for (int i = 0; i < 50; i++) getToken();
+    char str[] = "Ahoj";
+    tokenPtr new = tokenInit(getType(floating), str, 15);
+    printf("%d\n", new->lineNumber);
+    if (new->type == T_float) printf("It is T_float\n");
+    else printf("It is not :(\n");
+    printf("value: %s\n", str);
+
     return 0;
 }
