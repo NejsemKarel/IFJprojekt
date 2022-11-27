@@ -60,13 +60,14 @@ typedef enum
     T_string,
     T_separator,
     T_prolog,
-    T_EOF
+    T_EOF,
+    T_ERROR
 }tokenType;
 
 typedef struct token
 {
     tokenType type;
-    char value;
+    char *value;
     int lineNumber;
 }*tokenPtr;
 
@@ -78,6 +79,6 @@ AutomatState Next_State(AutomatState now, char c);
 
 tokenType getType(AutomatState state);
 
-tokenPtr tokenInit (tokenType type, char val[], int line);
+tokenPtr createToken (tokenType type, char val[], int line);
 
 int main();
