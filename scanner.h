@@ -75,7 +75,7 @@ typedef struct token
 
 //Funkce
 
-int getToken();        // gonna return token instead of void
+tokenPtr getToken();        // gonna return token instead of void
 
 AutomatState Next_State(AutomatState now, char c);
 

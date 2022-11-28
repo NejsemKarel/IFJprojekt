@@ -240,7 +240,7 @@ char *strAppend(char *str, char c)
 	return str;
 }
 
-int getToken()
+tokenPtr getToken()
 {
     static char c;
     char *val = NULL;
@@ -252,15 +252,15 @@ int getToken()
     {
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
-            printf("%s\t%d\n", val, lineNumber+1);
-            free(val);
-            val = NULL;
+            //printf("%s\t%d\n", val, lineNumber+1);
+            //free(val);
+            //val = NULL;
             ended = 1;
             if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
             {
                 lineNumber++;
             }
-            return 0;
+            return createToken(getType(CurrentState), val, lineNumber);
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
@@ -285,22 +285,17 @@ int getToken()
         {
             break;            // to be changed
         }
-  //      if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
-  //      {
-  //          lineNumber++;
-  //      }
-
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
-            printf("%s\t%d\n", val, lineNumber+1);
-            free(val);
-            val = NULL;
+            //printf("%s\t%d\n", val, lineNumber+1);
+            //free(val);
+            //val = NULL;
             ended = 1;
             if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
             {
                 lineNumber++;
             }
-            return 0;
+            return createToken(getType(CurrentState), val, lineNumber);
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
@@ -315,86 +310,90 @@ int getToken()
         
         CurrentState = Next_State(CurrentState, c);
     }
-    return 1;
+    return NULL;
 }
 
 int main ()     // testing
 {
-    for (int i = 0; i < 30; i++) 
-    {
-        getToken();
-    }
+  //  for (int i = 0; i < 30; i++) 
+  //  {
+  //      getToken();
+  //  }
 
 
-/*
+
     // createToken TESTCASE
-    char str[] = "Ahoj";
-    tokenPtr token = createToken(T_bracket, str, 15);
-    switch (token->type)
+   // char str[] = "Ahoj";
+   // tokenPtr token = createToken(T_bracket, str, 15);
+
+    for (int i = 0; i < 30; i++)
     {
-    case T_identifier:
-        printf("type:\tT_identifier\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_constant:
-        printf("type:\tT_constant\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_integer:
-        printf("type:\tT_integer\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_float:
-        printf("type:\tT_float\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_operator:
-        printf("type:\tT_operator\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_keyword:
-        printf("type:\tT_keyword\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_bracket:
-        printf("type:\tT_bracket\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_string:
-        printf("type:\tT_string\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_separator:
-        printf("type:\tT_separator\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_prolog:
-        printf("type:\tT_prolog\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_EOF:
-        printf("type:\tT_EOF\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    case T_ERROR:
-        printf("type:\tT_ERROR\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
-    default:
-        break;
+        tokenPtr token = getToken();
+        switch (token->type)
+        {
+        case T_identifier:
+            printf("type:\tT_identifier\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_constant:
+            printf("type:\tT_constant\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_integer:
+            printf("type:\tT_integer\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_float:
+            printf("type:\tT_float\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_operator:
+            printf("type:\tT_operator\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_keyword:
+            printf("type:\tT_keyword\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_bracket:
+            printf("type:\tT_bracket\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_string:
+            printf("type:\tT_string\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_separator:
+            printf("type:\tT_separator\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_prolog:
+            printf("type:\tT_prolog\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_EOF:
+            printf("type:\tT_EOF\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_ERROR:
+            printf("type:\tT_ERROR\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        default:
+            break;
+        }
     }
-    */
     return 0;
 }
