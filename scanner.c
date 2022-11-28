@@ -286,18 +286,33 @@ tokenPtr getToken()
         {
             break;            // to be changed
         }
+        if ((CurrentState != Next_State(CurrentState, c)) && Next_State(CurrentState,c) == prolog) lineNumber++;        // temporary solution
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
-            tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
-            //printf("%s\t%d\n", val, lineNumber+1);
-            //free(val);
-            //val = NULL;
-            ended = 1;
-            if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
+            if ((CurrentState != comment) && (CurrentState != comStart) && (CurrentState != comEnd) && (CurrentState != comPom))
             {
-                lineNumber++;
+                tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
+                //printf("%s\t%d\n", val, lineNumber+1);
+                //free(val);
+                //val = NULL;
+                ended = 1;
+                if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
+                {
+                    lineNumber++;
+                }
+                return new;
             }
-            return new;
+            else
+            {
+                if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
+                {
+                    lineNumber++;
+                }
+                free(val);
+                val = NULL;
+                ended = 1;
+            }
+
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
