@@ -399,6 +399,7 @@ int main ()     // testing
             break;
         }
         free(token->value);
+        free(token);
     }
     return 0;
 }
