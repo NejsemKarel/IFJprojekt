@@ -252,6 +252,7 @@ tokenPtr getToken()
     {
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
+            tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
             //printf("%s\t%d\n", val, lineNumber+1);
             //free(val);
             //val = NULL;
@@ -260,7 +261,7 @@ tokenPtr getToken()
             {
                 lineNumber++;
             }
-            return createToken(getType(CurrentState), val, lineNumber);
+            return new;
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
@@ -287,6 +288,7 @@ tokenPtr getToken()
         }
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
+            tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
             //printf("%s\t%d\n", val, lineNumber+1);
             //free(val);
             //val = NULL;
@@ -295,7 +297,7 @@ tokenPtr getToken()
             {
                 lineNumber++;
             }
-            return createToken(getType(CurrentState), val, lineNumber);
+            return new;
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
@@ -326,9 +328,11 @@ int main ()     // testing
    // char str[] = "Ahoj";
    // tokenPtr token = createToken(T_bracket, str, 15);
 
-    for (int i = 0; i < 30; i++)
+   // for (int i = 0; i < 30; i++)
+    while(true)
     {
         tokenPtr token = getToken();
+        if (token == NULL) break;
         switch (token->type)
         {
         case T_identifier:
@@ -394,6 +398,7 @@ int main ()     // testing
         default:
             break;
         }
+        free(token->value);
     }
     return 0;
 }
