@@ -18,6 +18,8 @@ typedef enum
     floating,                   // ++
     semicolon,                  // ++
     comma,                      // ++
+    dot,
+    colon,
     assign,                     
     doubleEqu,
     equal,
@@ -73,7 +75,7 @@ typedef struct token
 
 //Funkce
 
-void getToken();        // gonna return token instead of void
+int getToken();        // gonna return token instead of void
 
 AutomatState Next_State(AutomatState now, char c);
 

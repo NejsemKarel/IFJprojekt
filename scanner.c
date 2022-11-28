@@ -23,10 +23,12 @@ AutomatState Next_State (AutomatState now, char c)
                     if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A')) return keyword;
                     if (c <= '9' && c >= '0') return integer;
                     if (c == ';') return semicolon;
+                    if (c == ':') return colon;
                     if (c == '=') return assign;
                     if (c == '!') return exclMark;
                     if (c == '"') return stringRead;
                     if (c == ',') return comma;
+                    if (c == '.') return dot;
                     if (c == '(') return Lbracket;
                     if (c == ')') return Rbracket;
                     if (c == '{') return Lcurly;
@@ -55,6 +57,8 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case semicolon:     return start;
             break; 
+        case colon:         return start;
+            break;
         case assign:        if (c == '=') return doubleEqu;
                             return start;
             break;
@@ -64,7 +68,7 @@ AutomatState Next_State (AutomatState now, char c)
         case exclEqu:       if (c == '=') return notEqual;       
             break;
         case doubleEqu:     if (c == '=') return equal;
-                            return start;
+                            return start;                   // return error
             break;
         case equal:         return start;
             break;
@@ -76,6 +80,8 @@ AutomatState Next_State (AutomatState now, char c)
         case string:        return start;
             break;
         case comma:         return start;
+            break;
+        case dot:           return start;
             break;
         case Lbracket:      return start;
             break;
@@ -144,11 +150,11 @@ tokenType getType(AutomatState state)
         break;
     case semicolon:     return T_separator;
         break;
+    case colon:         return T_separator;
+        break;
     case assign:        return T_operator;
         break;
     case exclMark:      return T_operator;
-        break;
-    case doubleEqu:     return T_operator;
         break;
     case equal:         return T_operator;
         break;
@@ -157,6 +163,8 @@ tokenType getType(AutomatState state)
     case string:        return T_string;
         break;
     case comma:         return T_separator;
+        break;
+    case dot:           return T_separator;
         break;
     case Lbracket:      return T_bracket;
         break;
@@ -205,96 +213,117 @@ tokenPtr createToken(tokenType type, char *val, int line)
 char *strAppend(char *str, char c)
 {
 	char *tmp = NULL;
-	int pos = 0;
-
-	if (str == NULL)			// first character
+	int position = 0;
+	if (str == NULL)
 	{
 		tmp = (char*) realloc(str, sizeof(char) * 2);
-   	    pos = 0;
-   	}
-   	else						// append an existing string
-   	{
-		tmp = (char*) realloc(str, sizeof(char) * (strlen(str) + 2));
-		pos = strlen(str);
+		position = 0;
 	}
-   	if (tmp == NULL)
-   	{
-   		free(str);
-   		return NULL;
-   	}
-	str = tmp;
-	tmp = NULL;
-	str[pos] = c;
-	str[pos+1] = '\0';
+	else
+	{
+		position = strlen(str);
+		tmp = (char*) realloc(str, sizeof(char) *(position + 2));
+	}
+	if (tmp == NULL)
+	{
+		free(str);
+		printf("Realloc error\n");
+		return NULL;
+	}
+	else
+	{
+		str = tmp;
+		tmp = NULL;
+		str[position] = c;
+		str[position+1] = '\0';
+	}
 	return str;
 }
 
-void getToken()
+int getToken()
 {
     static char c;
-   // char *val = NULL;
-    static int ended;
+    char *val = NULL;
     static int lineNumber;              // returned in token as lineNumber+1
+    static int ended;
     AutomatState CurrentState = start;
+
     if (ended)
     {
-        if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
+        if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            printf("%s\t%d\n", val, lineNumber+1);
+            free(val);
+            val = NULL;
+            ended = 1;
+            if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
             {
-                printf("%d\n", lineNumber+1);           // return token
+                lineNumber++;
             }
-            //printf("%c", c);            // to be deleted
-            CurrentState = Next_State(CurrentState, c);
+            return 0;
         }
-        else if (c != ' ')
+        if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
-            {
-                printf("%d\n", lineNumber+1);           // return token
-            }
-            if (c != '\n') printf("%c", c);     // to be deleted
-            else lineNumber++;
-            CurrentState = Next_State(CurrentState, c);
-            if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
+            if ((c != ' ') && (c != '\n'))
+                val = strAppend(val, c);
         }
+        else if ((CurrentState != comment))     // CurrentState == string
+        {
+            if (c != '\n')
+                val = strAppend(val, c);
+
+        }
+        
+        CurrentState = Next_State(CurrentState, c);
         ended = 0;
     }
+
     while (true)
     {
         c = getchar();
-        if (c == EOF) break;            // to be changed
-        if ((CurrentState == comment && Next_State(CurrentState, c) != start) || CurrentState == comStart || CurrentState == comPom || CurrentState == stringRead)
+        if (c == EOF) 
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
-            {
-                printf("%d\n", lineNumber+1);           // return token
-                ended = 1;
-                break;
-            }
-            if (c == '\n')lineNumber++;
-            //printf("%c", c);            // to be deleted
-            CurrentState = Next_State(CurrentState, c);
+            break;            // to be changed
         }
-        else if (c != ' ')
+  //      if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
+  //      {
+  //          lineNumber++;
+  //      }
+
+        if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
-            if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
+            printf("%s\t%d\n", val, lineNumber+1);
+            free(val);
+            val = NULL;
+            ended = 1;
+            if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
             {
-                printf("%d\n", lineNumber+1);           // return token
-                ended = 1;
-                break;
+                lineNumber++;
             }
-            if (c != '\n') printf("%c", c);     // to be deleted
-            else lineNumber++;
-            CurrentState = Next_State(CurrentState, c);
-            if (CurrentState == start) CurrentState = Next_State(CurrentState, c);
+            return 0;
         }
+        if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
+        {
+            if ((c != ' ') && (c != '\n'))
+                val = strAppend(val, c);
+        }
+        else if ((CurrentState != comment))     // CurrentState == string
+        {
+            if (c != '\n')
+                val = strAppend(val, c);
+        }
+        
+        CurrentState = Next_State(CurrentState, c);
     }
+    return 1;
 }
 
 int main ()     // testing
 {
-    for (int i = 0; i < 50; i++) getToken();
+    for (int i = 0; i < 30; i++) 
+    {
+        getToken();
+    }
 
 
 /*
