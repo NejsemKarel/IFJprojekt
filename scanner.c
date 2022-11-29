@@ -65,7 +65,8 @@ AutomatState Next_State (AutomatState now, char c)
         case exclMark:      if (c == '=') return exclEqu;
                             return start;
             break;
-        case exclEqu:       if (c == '=') return notEqual;       
+        case exclEqu:       if (c == '=') return notEqual;
+                            return start;                   // return error     
             break;
         case doubleEqu:     if (c == '=') return equal;
                             return start;                   // return error
@@ -148,9 +149,9 @@ tokenType getType(AutomatState state)
         break;
     case floating:      return T_float;
         break;
-    case semicolon:     return T_separator;
+    case semicolon:     return T_semicolon;
         break;
-    case colon:         return T_separator;
+    case colon:         return T_colon;
         break;
     case assign:        return T_operator;
         break;
@@ -162,21 +163,21 @@ tokenType getType(AutomatState state)
         break;
     case string:        return T_string;
         break;
-    case comma:         return T_separator;
+    case comma:         return T_comma;
         break;
-    case dot:           return T_separator;
+    case dot:           return T_dot;
         break;
-    case Lbracket:      return T_bracket;
+    case Lbracket:      return T_Lbracket;
         break;
-    case Rbracket:      return T_bracket;
+    case Rbracket:      return T_Rbracket;
         break;
-    case Lcurly:        return T_bracket;
+    case Lcurly:        return T_Lcurly;
         break;
-    case Rcurly:        return T_bracket;
+    case Rcurly:        return T_Rcurly;
         break;
-    case Lsquare:       return T_bracket;
+    case Lsquare:       return T_Lsquare;
         break;
-    case Rsquare:       return T_bracket;
+    case Rsquare:       return T_Rsquare;
         break;
     case add:           return T_operator;
         break;
@@ -343,7 +344,7 @@ int main ()     // testing
    // char str[] = "Ahoj";
    // tokenPtr token = createToken(T_bracket, str, 15);
 
-   // for (int i = 0; i < 30; i++)
+    //for (int i = 0; i < 3; i++)
     while(true)
     {
         tokenPtr token = getToken();
@@ -380,8 +381,33 @@ int main ()     // testing
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;
-        case T_bracket:
-            printf("type:\tT_bracket\n");
+        case T_Lbracket:
+            printf("type:\tT_Lbracket\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_Rbracket:
+            printf("type:\tT_Rbracket\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_Lsquare:
+            printf("type:\tT_Lsquare\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_Rsquare:
+            printf("type:\tT_Rsquare\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_Lcurly:
+            printf("type:\tT_Lcurly\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_Rcurly:
+            printf("type:\tT_Rcurly\n");
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;
@@ -390,8 +416,23 @@ int main ()     // testing
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;
-        case T_separator:
-            printf("type:\tT_separator\n");
+        case T_semicolon:
+            printf("type:\tT_semicolon\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_colon:
+            printf("type:\tT_colon\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_comma:
+            printf("type:\tT_comma\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_dot:
+            printf("type:\tT_dot\n");
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;
