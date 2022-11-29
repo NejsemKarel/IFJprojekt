@@ -1,0 +1,98 @@
+digraph FSM {
+S -> variable[label="$"]
+variable -> variable[label="a-zA-Z0-9_"]
+variable[peripheries=2]
+
+S -> keyword[label="a-zA-Z"]
+keyword->keyword[label="a-zA-Z0-9_"]
+keyword[peripheries=2]
+
+S -> integer[label="0-9"]
+integer -> integer[label="0-9"]
+integer -> floating[label="."]
+floating -> floating[label="0-9"]
+integer[peripheries=2]
+floating[peripheries=2]
+
+S -> semicolon[label=";"]
+semicolon[peripheries=2]
+
+S->colon[label=":"]
+colon[peripheries=2]
+
+S->assign[label="="]
+assign->doubleEqu[label="="]
+doubleEqu->equal[label="="]
+assign[peripheries=2]
+equal[peripheries=2]
+
+S->exclMark[label="!"]
+exclMark->exclEqu[label="="]
+exclEqu->notEqual[label="="]
+exclMark[peripheries=2]
+notEqual[peripheries=2]
+
+S->stringRead[label="\""]
+stringRead->stringRead[label="^\""]
+stringRead->string[label="\""]
+string[peripheries=2]
+
+S->comma[label=","]
+comma[peripheries=2]
+
+S->dot[label="."]
+dot[peripheries=2]
+
+S->Lbracket[label="("]
+Lbracket[peripheries=2]
+
+S->Rbracket[label=")"]
+Rbracket[peripheries=2]
+
+S->Lcurly[label="{"]
+Lcurly[peripheries=2]
+
+S->Rcurly[label="}"]
+Rcurly[peripheries=2]
+
+S->Lsquare[label="["]
+Lsquare[peripheries=2]
+
+S->Rsquare[label="]"]
+Rsquare[peripheries=2]
+
+S->add[label="+"]
+add[peripheries=2]
+
+S->sub[label="-"]
+sub[peripheries=2]
+
+S->mul[label="*"]
+mul[peripheries=2]
+
+S->divide[label="/"]
+divide->comment[label="/"]
+divide->comStart[label="*"]
+comStart->comPom[label="*"]
+comPom->comEnd[label="/"]
+divide[peripheries=2]
+comment[peripheries=2]
+comEnd[peripheries=2]
+
+S->less[label="<"]
+less->prolog[label="?"]
+prolog->prologEnd[label="\\n"]
+less->lessEqual[label="="]
+less[peripheries=2]
+prologEnd[peripheries=2]
+lessEqual[peripheries=2]
+
+S->greater[label=">"]
+greater->greaterEqual[label="="]
+greater[peripheries=2]
+greaterEqual[peripheries=2]
+
+
+
+
+}
