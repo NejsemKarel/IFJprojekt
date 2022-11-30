@@ -153,7 +153,7 @@ tokenType getType(AutomatState state)
         break;
     case colon:         return T_colon;
         break;
-    case assign:        return T_operator;
+    case assign:        return T_assignment;
         break;
     case exclMark:      return T_operator;
         break;
@@ -373,6 +373,11 @@ int main ()     // testing
             break;
         case T_operator:
             printf("type:\tT_operator\n");
+            printf("value:\t%s\n", token->value);
+            printf("line:\t%d\n\n", token->lineNumber);
+            break;
+        case T_assignment:
+            printf("type:\tT_assignment\n");
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;

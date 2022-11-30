@@ -65,6 +65,7 @@ typedef enum
     T_Lcurly,
     T_Rcurly,
     T_string,
+    T_assignment,
     T_semicolon,
     T_colon,
     T_comma,
