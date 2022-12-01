@@ -7,27 +7,27 @@
 */
  #include <stdbool.h>
 
-// Function struct
+// Body struct - seznam hlavniho tela funkci a promennych
 
-typedef struct btree_function {
-  char ident;           // identifikátor
+typedef struct btree_body {
+  char name;           // identifikátor
   int order;            // pořadí
   char value;           // řetězec znaků/hodnota
-  struct btree_function *left;      // ukazatel na levý prvek
-  struct btree_function *right;     // ukazatel na pravý prvek
-} btree_function_t;
+  struct btree_body *left;      // ukazatel na levý prvek
+  struct btree_body *right;     // ukazatel na pravý prvek
+} btree_body_t;
 
-void btree_function_init(btree_function_t **tree);
-void btree_function_dispose(btree_function_t **tree);
-void btree_function_add(btree_function_t **tree, int order, char ident, char value);
-bool btree_function_search(btree_function_t *tree, int order, char ident, char value);
+void btree_body_init(btree_body_t **tree);
+void btree_body_dispose(btree_body_t **tree);
+void btree_body_add(btree_body_t **tree, int order, char name, char value);
+bool btree_body_search(btree_body_t *tree, int order, char name, char value);
 
 
 
 // Variable struct
 
 typedef struct btree_variable {
-  char ident;           // identifikátor
+  char name;           // identifikátor
   int order;            // pořadí
   char value;           // řetězec znaků/hodnota
   struct btree_variable *left;      // ukazatel na levý prvek
@@ -36,23 +36,5 @@ typedef struct btree_variable {
 
 void btree_variable_init(btree_variable_t **tree);
 void btree_variable_dispose(btree_variable_t **tree);
-void btree_variable_add(btree_variable_t **tree, int order, char ident, char value);
-bool btree_variable_search(btree_variable_t *tree, int order, char ident, char value);
-
-
-
-// Program
-
-typedef struct btree_program {
-  char ident;           // identifikátor
-  int order;            // pořadí
-  char value;           // řetězec znaků/hodnota
-  struct btree_program *left;      // ukazatel na levý prvek
-  struct btree_program *right;     // ukazatel na pravý prvek
-} btree_program_t;
-
-void btree_program_init(btree_program_t **tree);
-void btree_program_dispose(btree_program_t **tree);
-void btree_program_add(btree_program_t **tree, int order, char ident, char value);
-bool btree_program_search(btree_program_t *tree, int order, char ident, char value);
-
+void btree_variable_add(btree_variable_t **tree, char name, char value);
+bool btree_variable_search(btree_variable_t *tree, char name, char value);

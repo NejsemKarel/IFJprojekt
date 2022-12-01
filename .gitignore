@@ -54,5 +54,6 @@ dkms.conf
 #vscode
 .vscode
 
-#scan
+#scan a testovaci programky
 scan
+test.c
