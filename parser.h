@@ -7,4 +7,8 @@
 */
 
 #include "scanner.h"
+#include "symtable.h"
+#include <string.h>
+#include <stdbool.h>
 
+bool isItAKeyword (tokenPtr token);
