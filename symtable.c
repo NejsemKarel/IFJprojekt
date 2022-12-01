@@ -207,17 +207,11 @@ int strSort (char *val1, char *val2)
 	{
 		if (val1[i] < val2[i])
 		{
-			printf("%d\tval1 < val2\n", i);
 			return (-i);
 		}
 		else if (val1[i] > val2[i])
 		{
-			printf("%d\tval1 > val1\n", i);
 			return i;
-		}
-		else
-		{
-			printf("%d\tequal\n", i);
 		}
 		i++;
 	}
