@@ -38,3 +38,5 @@ void btree_variable_init(btree_variable_t **tree);
 void btree_variable_dispose(btree_variable_t **tree);
 void btree_variable_add(btree_variable_t **tree, char name, char value);
 bool btree_variable_search(btree_variable_t *tree, char name, char value);
+
+int strSort (char *val1, char *val2);

@@ -194,3 +194,32 @@ bool btree_variable_search(btree_variable_t *tree, char name, char value)
         }
     }
 }
+
+/*
+* Sort hodnot podle abecedy
+* -position val1 < val2    0 val1 == val2    +position val1 > val2
+*/
+ 
+int strSort (char *val1, char *val2)		
+{
+	int i = 0;
+	while (true)
+	{
+		if (val1[i] < val2[i])
+		{
+			printf("%d\tval1 < val2\n", i);
+			return (-i);
+		}
+		else if (val1[i] > val2[i])
+		{
+			printf("%d\tval1 > val1\n", i);
+			return i;
+		}
+		else
+		{
+			printf("%d\tequal\n", i);
+		}
+		i++;
+	}
+	return 0;
+}
