@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -Werror -Wextra
-ahoj: scanner.c
+fortnite: scanner.c
 	$(CC) -o scan scanner.c $(CFLAGS)
 	$(CC) -o parser parser.c $(CFLAGS)
 	$(CC) -o dll dll.c $(CFLAGS)

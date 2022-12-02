@@ -8,6 +8,7 @@
 
 #include "parser.h"
 
+
 bool isItAKeyword (tokenPtr token)
 {
     if (token->type != T_keyword) return false;       // redundant
@@ -24,15 +25,32 @@ bool isItAKeyword (tokenPtr token)
     return false;
 }
 
-void Error(){
-    printf("Error ocured in parser.c");
-    err = TRUE;
+void checkProlog(tokenPtr token){
+    while(token->type != T_prolog){
+        err = TRUE;
+        InsertLast(errs, token);
+        token = getToken();
+    }
+    
 }
 
 int main(void){
+    err = FALSE;
+    Init(errs);
+    Init(tokens);
     
-    tokenPtr firstToken = getToken();
+    tokenPtr currToken = getToken();
 
-    //if(firstToken->type == prolog){}
+    checkProlog(currToken);
+
+    if(err == TRUE){
+        while(errs->firstElement != NULL){
+            printf("\033[0;31m");
+            printf("Syntax error on line %d",errs->firstElement->data->lineNumber);
+            printf("\033[0m");
+        }
+    }else{
+        printf("\n***********************************\nAnd here you can imagine generated code\n***********************************\n");
+    }
     return 0;
 }

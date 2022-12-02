@@ -17,5 +17,8 @@
 
 int err;
 
+Dll *errs;
+Dll *tokens;
+
 bool isItAKeyword (tokenPtr token);
 int main();

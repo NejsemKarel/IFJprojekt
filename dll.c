@@ -1,4 +1,5 @@
 #include "dll.h"
+#include "parser.h"
 
 void Error(){
     printf("Error occured in double linked list");
@@ -25,7 +26,7 @@ void Dispose(Dll *list){
     }
 }
 
-void InsertFirst(Dll *list, int data){
+void InsertFirst(Dll *list, tokenPtr data){
     DllElementPtr newEl = (DllElementPtr) malloc(sizeof(struct DllElement));
     if(newEl != NULL){
         newEl->data = data;
@@ -43,7 +44,7 @@ void InsertFirst(Dll *list, int data){
     }
 }
 
-void InsertLast(Dll *list, int data){
+void InsertLast(Dll *list, tokenPtr data){
     DllElementPtr newEl = (DllElementPtr) malloc(sizeof(struct DllElement));
     if(newEl != NULL){
         newEl->data = data;
@@ -68,7 +69,7 @@ void Last(Dll *list){
     list->activeElement = list->lastElement;
 }
 
-void GetFirst(Dll *list, int *ptr){
+void GetFirst(Dll *list, tokenPtr *ptr){
     if(list->firstElement != NULL){
         *ptr = list->firstElement->data;
     }else{
@@ -76,7 +77,7 @@ void GetFirst(Dll *list, int *ptr){
     }
 }
 
-void GetLast(Dll *list, int *ptr){
+void GetLast(Dll *list, tokenPtr *ptr){
     if(list->lastElement != NULL){
         *ptr = list->lastElement->data;
     }else{
@@ -154,7 +155,7 @@ void DLL_DeleteBefore( Dll *list ) {
 	}
 }
 
-void DLL_InsertAfter( Dll *list, int data ) {
+void DLL_InsertAfter( Dll *list, tokenPtr data ) {
 	if(IsActive(list) == TRUE){		
 		DllElementPtr newEl = (DllElementPtr) malloc(sizeof(struct DllElement));
 		if(newEl != NULL){		
@@ -174,7 +175,7 @@ void DLL_InsertAfter( Dll *list, int data ) {
 	}
 }
 
-void DLL_InsertBefore( Dll *list, int data ) {
+void DLL_InsertBefore( Dll *list, tokenPtr data ) {
 	if(IsActive(list) == TRUE){		
 		DllElementPtr newEl = (DllElementPtr) malloc(sizeof(struct DllElement));
 		if(newEl != NULL){		
@@ -195,7 +196,7 @@ void DLL_InsertBefore( Dll *list, int data ) {
 	
 }
 
-void GetValue(Dll *list, int *ptr){
+void GetValue(Dll *list, tokenPtr *ptr){
     if(IsActive(list) == TRUE){
         *ptr = list->activeElement->data;
     }else{
@@ -203,7 +204,7 @@ void GetValue(Dll *list, int *ptr){
     }
 }
 
-void SetValue(Dll *list, int data){
+void SetValue(Dll *list, tokenPtr data){
     if(IsActive(list) == TRUE){
         list->activeElement->data = data;
     }
