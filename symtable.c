@@ -141,7 +141,7 @@ void btree_variable_dispose(btree_variable_t **tree)
 /*
 * Přidání prvku do stromu
 */
-void btree_variable_add(btree_variable_t **tree, char name, char value)
+void btree_variable_add(btree_variable_t **tree, char *name, char *value)
 {
     if((*tree) == NULL)
     {
@@ -154,11 +154,11 @@ void btree_variable_add(btree_variable_t **tree, char name, char value)
         element->right = NULL;
         (*tree) = element;
     }
-    else if((*tree)->name == name)
+    else if(strSort((*tree)->name, name) == 0)
     {
         (*tree)->value = value;
     }
-    else if((*tree)->name > name) // porovnat abecedne
+    else if(strSort((*tree)->name, name) > 0)
     {
         btree_variable_add(&((*tree)->left), name, value);
     }
@@ -171,7 +171,7 @@ void btree_variable_add(btree_variable_t **tree, char name, char value)
 /*
 * Vyhledá prvek v stromě
 */
-bool btree_variable_search(btree_variable_t *tree, char name, char value)
+bool btree_variable_search(btree_variable_t *tree, char *name, char *value)
 {
     if (tree == NULL)
     {
@@ -179,12 +179,12 @@ bool btree_variable_search(btree_variable_t *tree, char name, char value)
     }
     else
     {
-        if (tree->name == name)
+        if (strSort((tree)->name, name)==0)
         {
             value = tree->value;
             return true;
         }
-        else if(tree->name > name) // porovnat abecedne
+        else if(strSort((tree)->name, name) > 0)
         {
             return btree_variable_search(tree->left , name, value);
         }
@@ -207,11 +207,11 @@ int strSort (char *val1, char *val2)
 	{
 		if (val1[i] < val2[i])
 		{
-			return (-i);
+			return (-i-1);
 		}
 		else if (val1[i] > val2[i])
 		{
-			return i;
+			return i+1;
 		}
 		i++;
 	}
