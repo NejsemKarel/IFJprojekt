@@ -15,3 +15,5 @@ $a = $a - 1;
 }
 write("Vysledek je: ", $vysl, "\n");
 }
+
+$a = write("Hello\n");

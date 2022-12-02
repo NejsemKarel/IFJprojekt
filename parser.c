@@ -10,7 +10,7 @@
 
 bool isItAKeyword (tokenPtr token)
 {
-    if (token->type != keyword) return false;       // redundant
+    if (token->type != T_keyword) return false;       // redundant
     if (!strcmp(token->value, "else")) return true;
     if (!strcmp(token->value, "float")) return true;
     if (!strcmp(token->value, "function")) return true;
@@ -22,4 +22,17 @@ bool isItAKeyword (tokenPtr token)
     if (!strcmp(token->value, "void")) return true;
     if (!strcmp(token->value, "while")) return true;
     return false;
+}
+
+void Error(){
+    printf("Error ocured in parser.c");
+    err = TRUE;
+}
+
+int main(void){
+    
+    tokenPtr firstToken = getToken();
+
+    //if(firstToken->type == prolog){}
+    return 0;
 }
