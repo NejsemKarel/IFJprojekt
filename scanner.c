@@ -331,136 +331,130 @@ tokenPtr getToken()
     return NULL;
 }
 
-int main ()     // testing
+void tokenPrint(tokenPtr token)
 {
-  //  for (int i = 0; i < 30; i++) 
-  //  {
-  //      getToken();
-  //  }
-
-
-
-    // createToken TESTCASE
-   // char str[] = "Ahoj";
-   // tokenPtr token = createToken(T_bracket, str, 15);
-
-    //for (int i = 0; i < 3; i++)
-    while(true)
+    if (token == NULL) return;
+    switch (token->type)
     {
-        tokenPtr token = getToken();
-        if (token == NULL) break;
-        switch (token->type)
-        {
-        case T_identifier:
-            printf("type:\tT_identifier\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_constant:
-            printf("type:\tT_constant\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_integer:
-            printf("type:\tT_integer\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_float:
-            printf("type:\tT_float\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_operator:
-            printf("type:\tT_operator\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_assignment:
-            printf("type:\tT_assignment\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_keyword:
-            printf("type:\tT_keyword\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Lbracket:
-            printf("type:\tT_Lbracket\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Rbracket:
-            printf("type:\tT_Rbracket\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Lsquare:
-            printf("type:\tT_Lsquare\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Rsquare:
-            printf("type:\tT_Rsquare\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Lcurly:
-            printf("type:\tT_Lcurly\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_Rcurly:
-            printf("type:\tT_Rcurly\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_string:
-            printf("type:\tT_string\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_semicolon:
-            printf("type:\tT_semicolon\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_colon:
-            printf("type:\tT_colon\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_comma:
-            printf("type:\tT_comma\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_dot:
-            printf("type:\tT_dot\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_prolog:
-            printf("type:\tT_prolog\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_EOF:
-            printf("type:\tT_EOF\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        case T_ERROR:
-            printf("type:\tT_ERROR\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
-        default:
-            break;
-        }
-        free(token->value);
-        free(token);
+    case T_identifier:
+        printf("type:\tT_identifier\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_constant:
+        printf("type:\tT_constant\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_integer:
+        printf("type:\tT_integer\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_float:
+        printf("type:\tT_float\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_operator:
+        printf("type:\tT_operator\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_assignment:
+        printf("type:\tT_assignment\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_keyword:
+        printf("type:\tT_keyword\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Lbracket:
+        printf("type:\tT_Lbracket\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Rbracket:
+        printf("type:\tT_Rbracket\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Lsquare:
+        printf("type:\tT_Lsquare\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Rsquare:
+        printf("type:\tT_Rsquare\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Lcurly:
+        printf("type:\tT_Lcurly\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_Rcurly:
+        printf("type:\tT_Rcurly\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_string:
+        printf("type:\tT_string\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_semicolon:
+        printf("type:\tT_semicolon\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_colon:
+        printf("type:\tT_colon\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_comma:
+        printf("type:\tT_comma\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_dot:
+        printf("type:\tT_dot\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_prolog:
+        printf("type:\tT_prolog\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_EOF:
+        printf("type:\tT_EOF\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_ERROR:
+        printf("type:\tT_ERROR\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    default:
+        break;
     }
-    return 0;
 }
+
+//  int main ()     // testing
+//  {
+//      while(true)
+//      {
+//          tokenPtr token = getToken();
+//          if(token == NULL) break;
+//          tokenPrint(token);
+//          free(token->value);
+//          free(token);
+//      }
+//      return 0;
+//  }
