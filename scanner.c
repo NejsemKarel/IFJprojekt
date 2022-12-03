@@ -7,10 +7,6 @@
 */
 
 #include "scanner.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 
 //#include "btree.c"      // include binární vyhledávací strom
 
@@ -202,6 +198,22 @@ tokenType getType(AutomatState state)
     }
 }
 
+bool isItAKeyword (tokenPtr token)
+{
+    if (!strcmp(token->value, "else")) return true;
+    if (!strcmp(token->value, "float")) return true;
+    if (!strcmp(token->value, "function")) return true;
+    if (!strcmp(token->value, "if")) return true;
+    if (!strcmp(token->value, "int")) return true;
+    if (!strcmp(token->value, "null")) return true;
+    if (!strcmp(token->value, "return")) return true;
+    if (!strcmp(token->value, "string")) return true;
+    if (!strcmp(token->value, "void")) return true;
+    if (!strcmp(token->value, "while")) return true;
+    if (!strcmp(token->value, "strict_types")) return true;    // neodpovida zadani         
+    return false;
+}
+
 tokenPtr createToken(tokenType type, char *val, int line)
 {
     tokenPtr newToken = (tokenPtr) malloc(sizeof(struct token));
@@ -254,9 +266,10 @@ tokenPtr getToken()
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
             tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
-            //printf("%s\t%d\n", val, lineNumber+1);
-            //free(val);
-            //val = NULL;
+            if ((new->type == T_keyword) && !isItAKeyword(new))
+            {
+                new->type = T_function;
+            }
             ended = 1;
             if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
             {
@@ -266,12 +279,12 @@ tokenPtr getToken()
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
-            if ((c != ' ') && (c != '\n'))
+            if ((c != ' ') && (c != '\n') && (c != EOF))
                 val = strAppend(val, c);
         }
         else if ((CurrentState != comment))     // CurrentState == string
         {
-            if (c != '\n')
+            if ((c != '\n') && (c != EOF))
                 val = strAppend(val, c);
 
         }
@@ -283,19 +296,20 @@ tokenPtr getToken()
     while (true)
     {
         c = getchar();
-        if (c == EOF) 
-        {
-            break;            // to be changed
-        }
+    //    if (c == EOF) 
+    //    {
+    //        break;            // to be changed
+    //    }
         if ((CurrentState != Next_State(CurrentState, c)) && Next_State(CurrentState,c) == prolog) lineNumber++;        // temporary solution
         if ((CurrentState != Next_State(CurrentState, c)) && (Next_State(CurrentState, c) == start)) 
         {
             if ((CurrentState != comment) && (CurrentState != comStart) && (CurrentState != comEnd) && (CurrentState != comPom))
             {
                 tokenPtr new = createToken(getType(CurrentState), val, lineNumber+1);
-                //printf("%s\t%d\n", val, lineNumber+1);
-                //free(val);
-                //val = NULL;
+                if ((new->type == T_keyword) && !isItAKeyword(new))
+                {
+                    new->type = T_function;
+                }
                 ended = 1;
                 if ((c == '\n') && (CurrentState != string) && (CurrentState != stringRead))
                 {
@@ -317,15 +331,18 @@ tokenPtr getToken()
         }
         if ((CurrentState != comment) && (CurrentState != string) && (CurrentState != stringRead))    // && (val != NULL)
         {
-            if ((c != ' ') && (c != '\n'))
+            if ((c != ' ') && (c != '\n') && (c != EOF))
                 val = strAppend(val, c);
         }
         else if ((CurrentState != comment))     // CurrentState == string
         {
-            if (c != '\n')
+            if ((c != '\n') && (c != EOF))
                 val = strAppend(val, c);
         }
-        
+        if(c == EOF)            // moved here so that the input code doesnt have to end with new line
+        {
+            break;
+        }
         CurrentState = Next_State(CurrentState, c);
     }
     return NULL;
@@ -368,6 +385,11 @@ void tokenPrint(tokenPtr token)
         break;
     case T_keyword:
         printf("type:\tT_keyword\n");
+        printf("value:\t%s\n", token->value);
+        printf("line:\t%d\n\n", token->lineNumber);
+        break;
+    case T_function:
+        printf("type:\tT_function\n");
         printf("value:\t%s\n", token->value);
         printf("line:\t%d\n\n", token->lineNumber);
         break;
@@ -431,11 +453,6 @@ void tokenPrint(tokenPtr token)
         printf("value:\t%s\n", token->value);
         printf("line:\t%d\n\n", token->lineNumber);
         break;
-    case T_EOF:
-        printf("type:\tT_EOF\n");
-        printf("value:\t%s\n", token->value);
-        printf("line:\t%d\n\n", token->lineNumber);
-        break;
     case T_ERROR:
         printf("type:\tT_ERROR\n");
         printf("value:\t%s\n", token->value);
@@ -451,7 +468,11 @@ void tokenPrint(tokenPtr token)
 //      while(true)
 //      {
 //          tokenPtr token = getToken();
-//          if(token == NULL) break;
+//          if(token == NULL) 
+//          {
+//            free(token);
+//            break;
+//          }
 //          tokenPrint(token);
 //          free(token->value);
 //          free(token);

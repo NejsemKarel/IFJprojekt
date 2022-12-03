@@ -5,7 +5,10 @@
 * Hlavičkový soubor pro scanner.c
 **************************************************
 */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #define EOL '\n'
 
 //Stavy
@@ -58,6 +61,7 @@ typedef enum
     T_float,
     T_operator,
     T_keyword,
+    T_function,
     T_Lbracket,
     T_Rbracket,
     T_Lsquare,
@@ -71,7 +75,6 @@ typedef enum
     T_comma,
     T_dot,
     T_prolog,
-    T_EOF,
     T_ERROR
 }tokenType;
 
@@ -84,12 +87,16 @@ typedef struct token
 
 //Funkce
 
-tokenPtr getToken();        // gonna return token instead of void
+tokenPtr getToken();
 
 AutomatState Next_State(AutomatState now, char c);
 
 tokenType getType(AutomatState state);
 
 tokenPtr createToken (tokenType type, char val[], int line);
+
+void tokenPrint(tokenPtr token);
+
+bool isItAKeyword (tokenPtr token);
 
 int main();
