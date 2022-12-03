@@ -225,7 +225,3 @@ void Previous(Dll *list){
 int IsActive(Dll *list){
     return list->activeElement != NULL; 
 }
-
-int main(void){
-    return 0;
-}
