@@ -35,29 +35,33 @@ bool FUN(){
     if(tokens[tokenCnt]->type == T_keyword && !isItAKeyword(tokens[tokenCnt])){
         tokenCnt++;
         if(tokens[tokenCnt]->type == T_Lbracket){
+            tokenCnt++;
             if(ARG()){
                 if(tokens[tokenCnt]->type == T_Rbracket){
                     tokenCnt++;
                     return true;
                 }
+                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \")\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             }
+            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected argument\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         }
+        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"(\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
     }
     return false;
 }
 
 bool S(){
-    if(DEF()){return true;}
+    //if(DEF()){return true;}
 
-    if(STRUCT()){return true;}
+    //if(STRUCT()){return true;}
 
-    if(FUN()){  //TODO
+    if(FUN()){
         if(tokens[tokenCnt]->type == T_semicolon){
             tokenCnt++;
             return true;
         }else{
             printf("\nSyntax Error: missing ; on line %d\n",tokens[tokenCnt]->lineNumber);
-            return false;
+            
         }
     }
     return false;
@@ -187,9 +191,11 @@ int main(void){
         printf("-----------------------------\n");*/
         
         tokenCnt = 0;
-        if (!S()){
+        /*f (!S()){
             printf("there are errors in the syntax\n");
-        }
+        }*/
+
+        S();
         
     }
     
