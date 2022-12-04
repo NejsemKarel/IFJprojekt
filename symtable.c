@@ -16,7 +16,7 @@
 
 
 
-// FUNCTION BTREE
+// BODY BTREE
 
 
 /*
@@ -45,39 +45,37 @@ void btree_body_dispose(btree_body_t **tree)
 /*
 * Přidání prvku do stromu
 */
-void btree_body_add(btree_body_t **tree, int order, char name, char value)
+void btree_body_add(btree_body_t **tree, char *name, char *value)
 {
     if((*tree) == NULL)
     {
         btree_body_t *element = malloc(sizeof(struct btree_body));
         if(element == NULL)
             return;
-        element->order = order;
         element->name = name;
         element->value = value;
         element->left = NULL;
         element->right = NULL;
         (*tree) = element;
     }
-    else if((*tree)->order == order)
+    else if((*tree)->name == name)
     {
-        (*tree)->name = name;
         (*tree)->value = value;
     }
-    else if((*tree)->order > order)
+    else if((*tree)->name > name)
     {
-        btree_body_add(&((*tree)->left), order, name, value);
+        btree_body_add(&((*tree)->left), name, value);
     }
     else
     {
-        btree_body_add(&((*tree)->right), order, name, value);
+        btree_body_add(&((*tree)->right), name, value);
     }
 }
 
 /*
 * Vyhledá prvek v stromě
 */
-bool btree_body_search(btree_body_t *tree, int order, char name, char value)
+bool btree_body_search(btree_body_t *tree, char *name, char **value)
 {
     if (tree == NULL)
     {
@@ -85,19 +83,18 @@ bool btree_body_search(btree_body_t *tree, int order, char name, char value)
     }
     else
     {
-        if (tree->order == order)
+        if (tree->name == name)
         {
-            name = tree->name;
-            value = tree->value;
+            *value = tree->value;
             return true;
         }
-        else if(tree->order > order)
+        else if(tree->name > name)
         {
-            return btree_body_search(tree->left , order, name, value);
+            return btree_body_search(tree->left , name, value);
         }
         else
         {
-            return btree_body_search(tree->right, order, name, value);
+            return btree_body_search(tree->right, name, value);
         }
     }
 }
@@ -154,11 +151,11 @@ void btree_variable_add(btree_variable_t **tree, char *name, char *value)
         element->right = NULL;
         (*tree) = element;
     }
-    else if(strSort((*tree)->name, name) == 0)
+    else if((*tree)->name == name)
     {
         (*tree)->value = value;
     }
-    else if(strSort((*tree)->name, name) > 0)
+    else if((*tree)->name > name)
     {
         btree_variable_add(&((*tree)->left), name, value);
     }
@@ -171,7 +168,7 @@ void btree_variable_add(btree_variable_t **tree, char *name, char *value)
 /*
 * Vyhledá prvek v stromě
 */
-bool btree_variable_search(btree_variable_t *tree, char *name, char *value)
+bool btree_variable_search(btree_variable_t *tree, char *name, char **value)
 {
     if (tree == NULL)
     {
@@ -179,12 +176,12 @@ bool btree_variable_search(btree_variable_t *tree, char *name, char *value)
     }
     else
     {
-        if (strSort((tree)->name, name)==0)
+        if (tree->name == name)
         {
-            value = tree->value;
+            *value = tree->value;
             return true;
         }
-        else if(strSort((tree)->name, name) > 0)
+        else if(tree->name > name)
         {
             return btree_variable_search(tree->left , name, value);
         }
@@ -195,25 +192,28 @@ bool btree_variable_search(btree_variable_t *tree, char *name, char *value)
     }
 }
 
-/*
-* Sort hodnot podle abecedy
-* -position val1 < val2    0 val1 == val2    +position val1 > val2
-*/
- 
-int strSort (char *val1, char *val2)		
+btree_variable_t *strom;
+int main()
 {
-	int i = 0;
-	while (true)
-	{
-		if (val1[i] < val2[i])
-		{
-			return (-i-1);
-		}
-		else if (val1[i] > val2[i])
-		{
-			return i+1;
-		}
-		i++;
-	}
-	return 0;
+    char *kuk = "ano";
+    char *neco = kuk;
+
+    char *result;
+    btree_variable_init(&strom);
+    btree_variable_add(&strom, "ahoj12", "1");
+    btree_variable_add(&strom, "ahoj11", neco);
+    btree_variable_add(&strom, "ahojda", "4");
+    btree_variable_add(&strom, "ahojky", "3");
+    btree_variable_add(&strom, "ahoj13", "5");
+
+
+    btree_variable_search(strom, "ahoj11", &result);
+    printf("%s\n",result);
+ 
+
+
+
+    return 0;
+
+
 }
