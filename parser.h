@@ -24,6 +24,5 @@ bool err;
 
 
 
-bool isItAKeyword (tokenPtr token);
 void prologCheck(tokenPtr token);
 int main();
