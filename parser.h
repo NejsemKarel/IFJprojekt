@@ -21,8 +21,20 @@ tokenPtr prevToken;
 
 int i;
 bool err;
-
+int tokenCnt;
 
 
 void prologCheck(tokenPtr token);
+bool S();
+bool DEF();
+bool VARIABLE();
+bool EXPR();
+bool FUNCTION();
+bool BODY();
+bool STRUCT();
+bool FUN();
+bool AGR();
+
+
+
 int main();

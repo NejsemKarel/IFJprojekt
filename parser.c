@@ -19,11 +19,154 @@ void prologCheck(tokenPtr token){
     }
     
 }
+
+bool EXPR(){
+    return true;
+}
+
+bool BODY(){
+    return true;
+}
+bool ARG(){
+    return true;
+}
+
+bool FUN(){
+    if(tokens[tokenCnt]->type == T_keyword && !isItAKeyword(tokens[tokenCnt])){
+        tokenCnt++;
+        if(tokens[tokenCnt]->type == T_Lbracket){
+            if(ARG()){
+                if(tokens[tokenCnt]->type == T_Rbracket){
+                    tokenCnt++;
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool S(){
+    if(DEF()){return true;}
+
+    if(STRUCT()){return true;}
+
+    if(FUN()){  //TODO
+        if(tokens[tokenCnt]->type == T_semicolon){
+            tokenCnt++;
+            return true;
+        }else{
+            printf("\nSyntax Error: missing ; on line %d\n",tokens[tokenCnt]->lineNumber);
+            return false;
+        }
+    }
+    return false;
+}
+
+bool DEF(){
+    if(VARIABLE()){return true;}
+
+    if(FUNCTION()){return true;}
+
+    return false;
+}
+
+bool VARIABLE(){
+    if(tokens[tokenCnt]->type == T_identifier){
+        tokenCnt++;
+        if(tokens[tokenCnt]->type == T_assignment){
+            tokenCnt++;
+            if(EXPR()){
+                if(tokens[tokenCnt]->type == T_semicolon){
+                    tokenCnt++;
+                    return true;
+                }else{
+                    printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \";\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                }
+            }
+        }else{
+            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"=\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            return false;
+        }
+    }
+    return false;
+}
+
+bool FUNCTION(){
+    if(!strcmp(tokens[tokenCnt]->value,"function")){
+        tokenCnt++;
+        if(tokens[tokenCnt]->type == T_keyword && !isItAKeyword(tokens[tokenCnt])){
+            tokenCnt++;
+            if(tokens[tokenCnt]->type == T_Rbracket){
+                tokenCnt++;
+                if(ARG()){
+                    if(tokens[tokenCnt]->type == T_Lbracket){
+                        tokenCnt++;
+                        if(tokens[tokenCnt]->type == T_colon){
+                            tokenCnt++;
+                            if((!strcmp(tokens[tokenCnt]->value,"int")) || (!strcmp(tokens[tokenCnt]->value,"float")) || (!strcmp(tokens[tokenCnt]->value,"double")) || (!strcmp(tokens[tokenCnt]->value,"char")) || (!strcmp(tokens[tokenCnt]->value,"string"))){
+                                tokenCnt++;
+                                if(tokens[tokenCnt]->type == T_Lcurly){
+                                    tokenCnt++;
+                                    if(BODY()){
+                                        if(tokens[tokenCnt]->type == T_Rcurly){
+                                            tokenCnt++;
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool STRUCT(){
+    if((!strcmp(tokens[tokenCnt]->value, "if")) || (!strcmp(tokens[tokenCnt]->value, "while"))){
+        tokenCnt++;
+        if(tokens[tokenCnt]->type == T_Lbracket){
+            tokenCnt++;
+            if(EXPR()){
+                if(tokens[tokenCnt]->type == T_Rbracket){
+                    tokenCnt++;
+                    if(tokens[tokenCnt]->type == T_Lcurly){
+                        tokenCnt++;
+                        if(BODY()){
+                            if(tokens[tokenCnt]->type == T_Rcurly){
+                                tokenCnt++;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if(!strcmp(tokens[tokenCnt]->value, "else")){
+        tokenCnt++;
+        if(tokens[tokenCnt]->type == T_Lcurly){
+            tokenCnt++;
+            if(BODY()){
+                if(tokens[tokenCnt]->type == T_Rcurly){
+                    tokenCnt++;
+                    return true;
+                }
+            }
+                    
+        }
+    }
+    return false;
+}
     
 int main(void){
     err = false;
     currToken = getToken();
     prologCheck(currToken);
+    currToken = getToken();
     while (currToken != NULL){
         i = 0;
         while (currToken != NULL){
@@ -37,11 +180,16 @@ int main(void){
             currToken = getToken();
             i++;
         }
-        for (int m = 0; m <= i; m++){
+        /*for (int m = 0; m <= i; m++){
             printf("%d\n",m);
             tokenPrint(tokens[m]);
         }
-        printf("-----------------------------\n");
+        printf("-----------------------------\n");*/
+        
+        tokenCnt = 0;
+        if (!S()){
+            printf("there are errors in the syntax\n");
+        }
         
     }
     
