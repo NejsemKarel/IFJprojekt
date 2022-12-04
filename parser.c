@@ -137,11 +137,6 @@ void tokenPrint(tokenPtr token){
             printf("value:\t%s\n", token->value);
             printf("line:\t%d\n\n", token->lineNumber);
             break;
-        case T_EOF:
-            printf("type:\tT_EOF\n");
-            printf("value:\t%s\n", token->value);
-            printf("line:\t%d\n\n", token->lineNumber);
-            break;
         case T_ERROR:
             printf("type:\tT_ERROR\n");
             printf("value:\t%s\n", token->value);
