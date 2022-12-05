@@ -1,2 +1,9 @@
 <?
-write(
+if($a === $b){
+
+}else{
+
+}
+while($a){
+
+}

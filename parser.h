@@ -14,6 +14,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define DEBUG (tokenPrint(tokens[tokenCnt]));
+
 
 tokenPtr tokens[100];
 tokenPtr currToken;
@@ -22,7 +24,8 @@ tokenPtr prevToken;
 int i;
 bool err;
 int tokenCnt;
-
+bool emptyList;
+int errCnt;
 
 void prologCheck(tokenPtr token);
 bool S();
