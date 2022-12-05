@@ -16,7 +16,7 @@ AutomatState Next_State (AutomatState now, char c)
     {
         case start: if (c == ' ' || c == '\n') return start;
                     if (c == '$') return variable;
-                    if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A')) return keyword;
+                    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return keyword;
                     if (c <= '9' && c >= '0') return integer;
                     if (c == ';') return semicolon;
                     if (c == ':') return colon;
@@ -37,6 +37,7 @@ AutomatState Next_State (AutomatState now, char c)
                     if (c == '/') return divide;
                     if (c == '<') return less;
                     if (c == '>') return greater;
+                    else return errorState;
             break;
         case keyword:       if ((c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0') || c == '_') return keyword;
                             return start;
@@ -127,7 +128,9 @@ AutomatState Next_State (AutomatState now, char c)
             break;
         case comEnd:        return start;
             break;
-        default:            return now;
+        case errorState:     return start;
+            break;
+        default:            return errorState;
             break;
     }
     return now;
