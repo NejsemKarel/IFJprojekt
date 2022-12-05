@@ -1,10 +1,10 @@
 CC=gcc
 CFLAGS=-Wall -Werror -Wextra
 fortnite: scanner.c
-	$(CC) -o parser parser.c scanner.c $(CFLAGS)
+	$(CC) -o compile parser.c scanner.c $(CFLAGS)
 run:
-	$(CC) -o parser parser.c scanner.c $(CFLAGS)
-	./parser < example.txt
+	$(CC) -o compile parser.c scanner.c $(CFLAGS)
+	./compile < example.txt
 
 scanner:
 	$(CC) -o scan scanner.c $(CFLAGS)
