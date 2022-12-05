@@ -15,6 +15,7 @@
 typedef enum
 {
     start,
+    errorState,
     variable,                   // ++
     keyword,                    // ++
     integer,                    // ++
