@@ -361,7 +361,7 @@ void tokenPrint(tokenPtr token)
         printf("value:\t%s\n", token->value);
         printf("line:\t%d\n\n", token->lineNumber);
         break;
-    case T_constant:
+    case T_constant:        // unused (T_integer, T_float instead)
         printf("type:\tT_constant\n");
         printf("value:\t%s\n", token->value);
         printf("line:\t%d\n\n", token->lineNumber);
