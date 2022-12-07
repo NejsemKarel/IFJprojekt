@@ -28,6 +28,9 @@ bool EXPR(){
     if(!strcmp(tokens[tokenCnt]->value, "null")){
         return true;
     }
+    if((tokens[tokenCnt]->type == T_identifier) || (tokens[tokenCnt]->type == T_integer) || (tokens[tokenCnt]->type == T_float) || (tokens[tokenCnt]->type == T_string)){
+        return true;
+    }
     if(tokens[tokenCnt]->type == T_identifier){
         tokenCnt++;
         if(tokens[tokenCnt]->type == T_operator){
@@ -75,7 +78,7 @@ bool EXPR(){
 bool BODY(){
     if(!strcmp(tokens[tokenCnt]->value, "return")){
         tokenCnt++;
-        if(tokens[tokenCnt]->type, T_keyword){
+        if(tokens[tokenCnt]->type == T_keyword){
             tokenCnt++;
             if(tokens[tokenCnt]->type == T_semicolon){
                 tokenCnt++;
@@ -97,9 +100,9 @@ bool BODY(){
             }
             return true;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \";\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected ;\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
-        return false
+        return false;
     }     
     if(VARIABLE()){
         if(BODY()){
@@ -113,11 +116,31 @@ bool BODY(){
         }
         return true;
     }
-    
-
+    return false;
 }
 bool ARG(){
     if(!strcmp(tokens[tokenCnt]->value, "null")){
+        return true;
+    }
+    if (!strcmp(tokens[tokenCnt]->value, "strict_types")){      // prolog second line
+        tokenCnt++;
+        if(tokens[tokenCnt]->type  == T_assignment){
+            tokenCnt++;
+            if(tokens[tokenCnt]->type == EXPR()){
+                return true;
+            }
+            return false;
+        }
+    }
+    if (tokens[tokenCnt]->type  == T_string){
+        tokenCnt++;
+        if (tokens[tokenCnt]->type == T_comma){
+            if (ARG())
+            {
+                return true;
+            }
+            return false;
+        }
         return true;
     }
     if(tokens[tokenCnt]->type == T_identifier){
@@ -152,7 +175,7 @@ bool ARG(){
         }
         return true;
     }
-
+    return false;
 }
 
 bool FUN(){
@@ -160,22 +183,25 @@ bool FUN(){
         tokenCnt++;
         if(tokens[tokenCnt]->type == T_Lbracket){
             tokenCnt++;
+            if(tokens[tokenCnt]->type == T_Rbracket){
+                return true;
+            }
             if(ARG()){
                 if(tokens[tokenCnt]->type == T_Rbracket){
                     tokenCnt++;
                     return true;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \")\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected )\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
-            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected an argument\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            printf("\nSyntax Error: unexpected %s on line %d. Expected an argument\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             errCnt++;
             err = true;
             return false;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"(\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected (\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -218,17 +244,17 @@ bool VARIABLE(){
                     tokenCnt++;
                     return true;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \";\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected ;\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
-            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected an expression\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            printf("\nSyntax Error: unexpected %s on line %d. Expected an expression\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             errCnt++;
             err = true;
             return false;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"=\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected =\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -257,43 +283,43 @@ bool FUNCTION(){
                                             tokenCnt++;
                                             return true;
                                         }
-                                        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"}\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                                        printf("\nSyntax Error: unexpected %s on line %d. Expected }\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                                         errCnt++;
                                         err = true;
                                         return false;
                                     }
                                 }
-                                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"{\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                                printf("\nSyntax Error: unexpected %s on line %d. Expected {\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                                 errCnt++;
                                 err = true;
                                 return false;
                             }
-                            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"data type\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                            printf("\nSyntax Error: unexpected %s on line %d. Expected data type\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                             errCnt++;
                             err = true;
                             return false;
                         }
-                        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \":\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                        printf("\nSyntax Error: unexpected %s on line %d. Expected :\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                         errCnt++;
                         err = true;
                         return false;
                     }
-                    printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \")\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                    printf("\nSyntax Error: unexpected %s on line %d. Expected )\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                     errCnt++;
                     err = true;
                     return false;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"arguent\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected arguent\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
-            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"(\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            printf("\nSyntax Error: unexpected %s on line %d. Expected (\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             errCnt++;
             err = true;
             return false;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"name of the function\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected name of the function\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -316,28 +342,28 @@ bool STRUCT(){
                                 tokenCnt++;
                                 return true;
                             }
-                            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"}\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                            printf("\nSyntax Error: unexpected %s on line %d. Expected }\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                             errCnt++;
                             err = true;
                             return false;
                         }
                     }
-                    printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"{\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                    printf("\nSyntax Error: unexpected %s on line %d. Expected {\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                     errCnt++;
                     err = true;
                     return false;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \")\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected )\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
-            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"expression\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            printf("\nSyntax Error: unexpected %s on line %d. Expected expression\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             errCnt++;
             err = true;
             return false;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"(\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected (\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -356,28 +382,28 @@ bool STRUCT(){
                                 tokenCnt++;
                                 return true;
                             }
-                            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"}\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                            printf("\nSyntax Error: unexpected %s on line %d. Expected }\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                             errCnt++;
                             err = true;
                             return false;
                         }
                     }
-                    printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"{\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                    printf("\nSyntax Error: unexpected %s on line %d. Expected {\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                     errCnt++;
                     err = true;
                     return false;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \")\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected )\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
-            printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"expression\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+            printf("\nSyntax Error: unexpected %s on line %d. Expected expression\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
             errCnt++;
             err = true;
             return false;
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"(\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected (\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -391,13 +417,13 @@ bool STRUCT(){
                     tokenCnt++;
                     return true;
                 }
-                printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"}\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+                printf("\nSyntax Error: unexpected %s on line %d. Expected }\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
                 errCnt++;
                 err = true;
                 return false;
             }
         }
-        printf("\nSyntax Error: unexpected \"%s\" on line %d. Expected \"{\"\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
+        printf("\nSyntax Error: unexpected %s on line %d. Expected {\n",tokens[tokenCnt]->value,tokens[tokenCnt]->lineNumber);
         errCnt++;
         err = true;
         return false;
@@ -409,9 +435,11 @@ int main(void){
     err = false;
     errCnt = 0;
     currToken = getToken();
+    if((currToken != NULL) && (currToken->type == T_ERROR)) return 1;
     prologCheck(currToken);
     if(emptyList){return 0;}
     currToken = getToken();
+    if((currToken != NULL) && (currToken->type == T_ERROR)) return 1;
     while (currToken != NULL){
         i = 0;
         while (currToken != NULL){
@@ -419,10 +447,12 @@ int main(void){
             {   
                 tokens[i] = currToken;
                 currToken = getToken();
+                if((currToken != NULL) && (currToken->type == T_ERROR)) return 1;
                 break;
             }
             tokens[i] = currToken;
             currToken = getToken();
+            if((currToken != NULL) && (currToken->type == T_ERROR)) return 1;
             i++;
         }
         /*for (int m = 0; m <= i; m++){
