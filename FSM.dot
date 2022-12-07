@@ -1,4 +1,6 @@
 digraph FSM {
+ratio = 1.6
+layout = circo
 S -> variable[label="$"]
 variable -> variable[label="a-zA-Z0-9_"]
 variable[peripheries=2]
